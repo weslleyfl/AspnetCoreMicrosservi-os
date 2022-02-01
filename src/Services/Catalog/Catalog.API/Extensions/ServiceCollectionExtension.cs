@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 
 namespace Catalog.API.Extensions
 {
@@ -18,14 +20,27 @@ namespace Catalog.API.Extensions
     {
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<MongoDbOptions>(options => 
-                configuration.GetSection(MongoDbOptions.DatabaseSettings).Bind(options));
+            //services.Configure<MongoDbOptions>(options =>
+            //    configuration.GetSection(MongoDbOptions.DatabaseSettings).Bind(options));
+
+            services.Configure<MongoDbOptions>(configuration.GetSection(MongoDbOptions.DatabaseSettings));
+
+            services.AddSingleton<IMongoDbOptions>(options =>
+                options.GetRequiredService<IOptions<MongoDbOptions>>().Value);
+
+            services.AddSingleton<IMongoClient>(options =>
+                new MongoClient(configuration.GetValue<string>("DatabaseSettings:ConnectionString")));
+
 
             return services;
         }
 
+        /// <summary>
+        /// Add services to the container
+        /// </summary>    
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+
             services.AddScoped<ICatalogContext, CatalogContext>();
             services.AddScoped<IProductRepository, ProductRepository>();
 

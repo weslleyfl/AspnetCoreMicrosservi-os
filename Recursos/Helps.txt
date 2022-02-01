@@ -1,2 +1,24 @@
 Link do repositório do curso
 https://github.com/mehmetozkaya/AspnetMicroservices
+
+-- Usando MongoDB
+
+docker run -d -p 27017:27017 --name shopping-mongo mongo
+
+docker logs -f shopping-mongo
+
+docker exec -it shopping-mongo /bin/bash
+
+-- comandos Mongo container
+mongo  --> vai para o mongoshell
+
+show dbs
+use CatalogDb ---> vai criar o banco para nos
+> db.createCollection('Products') --> criar uma coleçao collection
+db.Products.insert
+
+
+-- Consultar pacotes
+https://www.nuget.org/packages
+
+--

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catalog.API.Data;
+using Catalog.API.Infrastructure.Filters;
 using Catalog.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,8 +21,6 @@ namespace Catalog.API.Extensions
     {
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.Configure<MongoDbOptions>(options =>
-            //    configuration.GetSection(MongoDbOptions.DatabaseSettings).Bind(options));
 
             services.Configure<MongoDbOptions>(configuration.GetSection(MongoDbOptions.DatabaseSettings));
 
@@ -38,7 +37,7 @@ namespace Catalog.API.Extensions
         /// <summary>
         /// Add services to the container
         /// </summary>    
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
         {
 
             services.AddScoped<ICatalogContext, CatalogContext>();
@@ -47,18 +46,44 @@ namespace Catalog.API.Extensions
             return services;
         }
 
+        public static IServiceCollection AddCustomMVC(this IServiceCollection services)
+        {
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+            }).AddNewtonsoftJson();
 
-        //public static IServiceCollection AddSwagger(this IServiceCollection services, string xmlFileName)
-        //{
-        //    services.AddSwaggerGen(doc =>
-        //    {
-        //        doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Social Media API", Version = "v1" });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
 
-        //        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-        //        doc.IncludeXmlComments(xmlPath);
-        //    });
 
-        //    return services;
-        //}
+            return services;
+
+        }
+
+
+        public static IServiceCollection AddSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(doc =>
+            {
+                //doc.DescribeAllEnumsAsStrings();
+                doc.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Catalog.API",
+                    Version = "v1",
+                    Description = "The Catalog Microservice HTTP API. This is a Data-Driven/CRUD microservice sample"
+                });
+
+            });
+
+            return services;
+        }
     }
 }

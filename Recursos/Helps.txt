@@ -21,4 +21,30 @@ db.Products.insert
 -- Consultar pacotes
 https://www.nuget.org/packages
 
---
+-- Links para tests
+
+Catalog.API
+
+http://localhost:8000/swagger/index.html
+
+Basket HTTP API
+
+http://localhost:8001/swagger/index.html
+
+
+-- Portainer
+
+https://www.portainer.io/
+
+https://docs.portainer.io/v/ce-2.11/start/intro
+
+https://localhost:9443/#!/init/admin
+admin
+12345678
+
+-- PostgreSql --> PgAdmin
+
+http://localhost:5050
+
+EMAIL = weslley@aspnetrun.com
+PASSWORD = admin1234

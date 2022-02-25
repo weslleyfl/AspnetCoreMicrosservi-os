@@ -42,6 +42,9 @@ https://localhost:9443/#!/init/admin
 admin
 12345678
 
+
+psql -U Username DatabaseName 
+
 -- PostgreSql --> PgAdmin
 
 http://localhost:5050

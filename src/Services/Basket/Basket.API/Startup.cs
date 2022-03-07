@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using Basket.API.Infrastructure.PollyHandler;
 
 namespace Basket.API
 {
@@ -60,8 +61,12 @@ namespace Basket.API
 
 
             // Grpc Configuration
-            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
-                (o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
+            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(o =>
+            {
+                o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]);
+
+            }).AddPolicyHandler((provider, request) => LoggingRetryHandler.GetPolicy(provider, request));
+
             services.AddScoped<IDiscountGrpcService, DiscountGrpcService>();
 
             services.AddControllers(options =>

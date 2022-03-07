@@ -22,7 +22,10 @@ namespace Discount.Grpc
             services.AddScoped<IDiscountRepository, DiscountRepository>();
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddGrpc();
+            services.AddGrpc(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
